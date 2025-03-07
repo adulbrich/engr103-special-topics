@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>3D Rotating Cube</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@v0.174.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@v0.174.0/examples/jsm/"
+        }
+      }
+    </script>
+    <script type="module">
+      import * as THREE from "three";
+
+      // Scene setup
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(
+        75, // field of view
+        window.innerWidth / window.innerHeight, // aspect ratio
+        0.1, // near clipping plane
+        1000 // far clipping plane
+      );
+      camera.position.z = 5;
+
+      // Use the existing canvas from HTML
+      const canvas = document.getElementById("renderCanvas");
+      const renderer = new THREE.WebGLRenderer({ canvas: canvas });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      // Add a directional light
+      const dirLight = new THREE.DirectionalLight("#ffffff", 1.2);
+      dirLight.position.set(5, 5, 5);
+      scene.add(dirLight);
+
+      // Add ambient light
+      const ambientLight = new THREE.AmbientLight("#ffffff", 0.4);
+      scene.add(ambientLight);
+
+      // Create the cube
+      const geometry = new THREE.BoxGeometry(1, 1, 1);
+      const material = new THREE.MeshLambertMaterial({ color: "#ea580c" });
+      const cube = new THREE.Mesh(geometry, material);
+      scene.add(cube);
+
+      cube.position.x = 0;
+      cube.position.y = 0;
+      cube.position.z = 0;
+
+      // Animation loop
+      function animate() {
+        requestAnimationFrame(animate);
+        cube.rotation.x += 0.02;
+        cube.rotation.y += 0.02;
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      // Handle window resize
+      window.addEventListener("resize", () => {
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+      });
+    </script>
+  </head>
+  <body>
+    <canvas id="renderCanvas"></canvas>
+  </body>
+</html>

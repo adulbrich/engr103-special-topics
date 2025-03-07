@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <title>Hello World</title>
+        <style>
+            body {
+                font-family: sans-serif;
+                background-color: #f4f4f4;
+            }
+            h1 {
+                color: #ea580c;
+                text-align: center;
+            }
+            p {
+                color: #333;
+                text-align: center;
+            }
+            button {
+                display: block;
+                margin: 20px auto;
+                padding: 10px 20px;
+                background-color: #ea580c;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+        </style>
+        <script>
+            let clickCount = 0;
+            
+            function incrementCounter() {
+                clickCount++;
+                
+                const paragraph = document.getElementById('placeholder');
+                paragraph.textContent = `You clicked the button ${clickCount} time(s)`;
+            }
+        </script>
+    </head>
+    <body> 
+        <h1>Hello World</h1>
+        <p id="placeholder"> 
+            Alex was here.
+        </p>
+        <button onclick="incrementCounter()">Click me</button>
+    </body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Catch the Cube</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      canvas {
+        display: block;
+      }
+      #score {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-family: Arial, sans-serif;
+        font-size: 24px;
+        color: white;
+        text-shadow: 1px 1px 2px black;
+      }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@v0.174.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@v0.174.0/examples/jsm/"
+        }
+      }
+    </script>
+    <script type="module">
+      import * as THREE from "three";
+
+      // Scene setup
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(
+        75, // field of view
+        window.innerWidth / window.innerHeight, // aspect ratio
+        0.1, // near clipping plane
+        1000 // far clipping plane
+      );
+      camera.position.z = 5;
+
+      // Use the existing canvas from HTML
+      const canvas = document.getElementById("gameCanvas");
+      const renderer = new THREE.WebGLRenderer({ canvas: canvas });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      // Add a directional light
+      const dirLight = new THREE.DirectionalLight("#ffffff", 1.2);
+      dirLight.position.set(5, 5, 5);
+      scene.add(dirLight);
+
+      // Add ambient light
+      const ambientLight = new THREE.AmbientLight("#ffffff", 0.4);
+      scene.add(ambientLight);
+
+      // Create the cube
+      const geometry = new THREE.BoxGeometry(1, 1, 1);
+      const material = new THREE.MeshLambertMaterial({ color: "#ea580c" });
+      const cube = new THREE.Mesh(geometry, material);
+      scene.add(cube);
+
+      // Game variables
+      let score = 0;
+      const scoreDisplay = document.getElementById("score");
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+
+      // Randomly reposition cube
+      function moveCube() {
+        cube.position.x = (Math.random() - 0.5) * 8;
+        cube.position.y = (Math.random() - 0.5) * 4;
+        cube.position.z = (Math.random() - 0.5) * 4;
+      }
+      moveCube();
+
+      // Animation loop
+      function animate() {
+        requestAnimationFrame(animate);
+        cube.rotation.x += 0.02;
+        cube.rotation.y += 0.02;
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      // Handle clicks
+      document.addEventListener("click", (event) => {
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObject(cube);
+        if (intersects.length > 0) {
+          score += 1;
+          scoreDisplay.textContent = `Score: ${score}`;
+          moveCube();
+        }
+      });
+
+      // Handle window resize
+      window.addEventListener("resize", () => {
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+      });
+    </script>
+  </head>
+  <body>
+    <div id="score">Score: 0</div>
+    <canvas id="gameCanvas"></canvas>
+  </body>
+</html>
